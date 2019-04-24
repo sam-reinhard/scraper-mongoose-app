@@ -35,6 +35,19 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines
 mongoose.connect(MONGODB_URI);
 
 // Routes
+app.get("/scrape", function(req, res){
+  axios.get("http://www.theonion.com/").then(function(response){
+    var $ = cheerio.load(response.data);
+
+    $("a.js_entry-link").each(function(i, element){
+      var result = {};
+
+      result.title = $(this)
+        .children()
+    })
+  })
+    
+})
 
 
 // Start the server
