@@ -3,8 +3,6 @@ var express = require("express");
 var app = express();
 
 // Our scraping tools
-// Axios is a promised-based http library, similar to jQuery's Ajax method
-// It works on the client and on the server
 var axios = require("axios");
 var cheerio = require("cheerio");
 
@@ -22,8 +20,6 @@ var PORT = 3000;
 // Initialize Express
 var app = express();
 
-// Configure middleware
-
 // Parse request body as JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -40,15 +36,24 @@ app.get("/scrape", function(req, res){
   axios.get("http://www.theonion.com/").then(function(response){
     var $ = cheerio.load(response.data);
 
-    $("h1.headline").each(function(i, element){
+    $("article").each(function(i, element){
       var result = {};
 
       result.title = $(this)
+        .children("header")
+        .children("h1")
         .text();
       result.link = $(this)
+        .children("header")
+        .children("h1")
         .children("a")
         .attr("href");
-        
+      result.summary = $(this)
+        .children(".item__content")
+        .children(".excerpt")
+        .children("p")
+        .text();
+
         db.Article.create(result).then(function(dbArticle){
           console.log(dbArticle);
         })
