@@ -17,6 +17,12 @@ $(document).on("click", "#comment-button", function(){
     var thisModal = $("#comment-modal").attr("data-id", thisId).show();
 });
 
+// Close Comment Modal On-click
+$(document).on("click", ".close", function(){
+    $("#comment-modal").hide();
+});
+
+
 // Submit Comment On-click
 $(document).on("click", "#comment-submit", function(){
     var thisId = $(this).attr("data-id");
@@ -35,6 +41,8 @@ $(document).on("click", "#comment-submit", function(){
         $("#comment-title").empty();
         $("#comment-body").empty();
     });
+    
+    $("#comment-modal").hide();
 });
 
 // Delete Comment On-click
