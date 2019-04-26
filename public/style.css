@@ -1,0 +1,17 @@
+header {
+    text-align: center;
+}
+
+h2 a {
+    color: black;
+}
+
+button {
+    width: 180px;
+    margin: 10px;
+}
+
+.row {
+    margin: 60px 0px;
+}
+

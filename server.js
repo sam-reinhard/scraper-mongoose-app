@@ -17,12 +17,10 @@ var db = require("./models");
 
 var PORT = 3000;
 
-// Initialize Express
-var app = express();
-
 // Parse request body as JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
 // Make public a static folder
 app.use(express.static("public"));
 
@@ -31,7 +29,9 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines
 
 mongoose.connect(MONGODB_URI);
 
-// Routes
+                      // Routes
+
+// Scrape for new articles
 app.get("/scrape", function(req, res){
   axios.get("http://www.theonion.com/").then(function(response){
     var $ = cheerio.load(response.data);
@@ -66,6 +66,51 @@ app.get("/scrape", function(req, res){
   });    
 });
 
+// See the articles in the database
+app.get("/articles", function(req, res){
+  console.log("on the / route");
+  db.Article.find({})
+    .then(function(data){
+      var hbsObject = {
+        articles: data
+      }
+      res.render("index", hbsObject);
+    })
+    .catch(function(err){
+      console.log("just an error");
+      console.log(err);
+      res.json(err);
+    });
+});
+
+// Submit a comment
+app.post("/articles/:id", function(req, res){
+  db.Comment.create(req.body)
+    .then(function(dbComment){
+      return db.Article.findOneAndUpdate({_id: req.params.id}, {note: dbComment._id}, {new: true});
+    })
+    .then(function(dbArticle){
+      var hbsObject = {
+        articles: dbArticle
+      }
+      res.render("index", hbsObject);
+    })
+    .catch(function(err){
+      console.log(err);
+    });
+});
+
+// View comments on an article
+app.get("/articles/:id", function(req, res){
+  db.Article.findOne({_id: req.params.id})
+    .populate("note")
+    .then(function(dbArticle){
+      res.json(dbArticle);
+    })
+    .catch(function(err){
+      console.log(err);
+    });
+});
 
 // Start the server
 app.listen(PORT, function() {

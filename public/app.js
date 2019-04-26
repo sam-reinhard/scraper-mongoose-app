@@ -1,5 +1,19 @@
-$.getJSON("/articles", function(data){
-    for (var i = 0; i < data.length; i++){
-        $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
-    }
-})
+$(document).on("click", "#save-button", function(){
+    var thisId = $(this).attr("data-id");
+
+    $.ajax({
+        method: "POST",
+        url: "/articles/" + thisId,
+        data: {
+            title: $("#comment-title").val().trim(),
+            body: $("#comment-body").val().trim() 
+        }
+    })
+    .then(function(data){
+        console.log(data);
+        $("#comments").empty();
+    });
+
+    $("#comment-title").val("");
+    $("#comment-body").val("");
+});
