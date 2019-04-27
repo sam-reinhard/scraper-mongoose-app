@@ -66,8 +66,6 @@ app.get("/scrape", function(req, res){
   });    
 });
 
-
-
 // Submit a comment -- Not working, submits a comment to a new collection called comments and there's no association with the article
 app.post("/articles/:id", function(req, res){
   console.log("submitting to /articles/" + req.params.id);
@@ -75,9 +73,9 @@ app.post("/articles/:id", function(req, res){
     .then(function(dbComment){
       return db.Article.findOneAndUpdate({_id: req.params.id}, {comment: dbComment._id}, {new: true});
     })
-    .then(function(dbArticle){
+    .then(function(data){
       var hbsObject = {
-        articles: dbArticle
+        comments: data
       }
       console.log("should have posted to the database");
       res.render("index", hbsObject);
@@ -91,7 +89,7 @@ app.post("/articles/:id", function(req, res){
 app.get("/articles/:id", function(req, res){
   console.log("getting from /articles/" + req.params.id);
   db.Article.findOne({_id: req.params.id})
-    .populate("Comment")
+    .populate("comment")
     .then(function(dbComment){
       res.json(dbComment);
     })
@@ -116,6 +114,7 @@ app.get("/articles", function(req, res){
       res.json(err);
     });
 });
+
 // Start the server
 app.listen(PORT, function() {
   console.log("App running on port " + PORT + "!");

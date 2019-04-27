@@ -29,7 +29,7 @@ $(document).on("click", ".close", function(){
     $("#comment-modal").hide();
 });
 
-// Submit Comment On-click -- comments are being saved, but not in the articles database
+// Submit Comment On-click
 $(document).on("click", "#comment-submit", function(){
     var thisId = $(this).attr("data-id");
     console.log("Submit comment " + thisId);
