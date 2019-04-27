@@ -8,7 +8,7 @@ $(document).on("click", "#scrape-button", function(){
     });
 });
 
-// Make Comment On-click -- getting back the article object, not the comments
+// Make Comment On-click -- getting back the article object
 $(document).on("click", "#comment-button", function(){
     var thisId = $(this).attr("data-id");
     console.log("make comment " + thisId );
