@@ -17,14 +17,15 @@
             </h2>
             <p>{{summary}}</p>
             <div class="text-center">
-                <button type="button" class="btn btn-dark" id="comment-button" data-id="{{_id}}">Comment</button>
+                <button type="button" class="btn btn-dark" id="comment-button" data-id="{{_id}}">Comments</button>
             </div>
             <div id="comment-modal" class="modal" data-id="{{_id}}">
                 <div class="modal-content">
                     <span class="close">&times;</span>
                     {{#each comment}}
-                    <p>{{this.title}}</p>
-                    <p>{{this.body}}</p>
+                    {{!-- Not actually displaying the comment title and body, but generating one delete button per comment tied to the article in the database --}}
+                    <p>{{title}}</p>
+                    <p>{{body}}</p>
                     <button type="button" class="btn btn-dark" id="delete-button" data-id="{{_id}}">Delete</button>
                     {{/each}}
                     <form>
