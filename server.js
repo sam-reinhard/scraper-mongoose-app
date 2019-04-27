@@ -66,7 +66,7 @@ app.get("/scrape", function(req, res){
   });    
 });
 
-// Submit a comment -- Not working, submits a comment to a new collection called comments and there's no association with the article
+// Submit a comment
 app.post("/articles/:id", function(req, res){
   console.log("submitting to /articles/" + req.params.id);
   db.Comment.create(req.body)
@@ -85,18 +85,21 @@ app.post("/articles/:id", function(req, res){
     });
 });
 
-// View comments on an article -- sending back the article object for some reason
+// View comments on an article -- sending back the article object,
+// but having trouble accessing the comments via their IDs
 app.get("/articles/:id", function(req, res){
   console.log("getting from /articles/" + req.params.id);
   db.Article.findOne({_id: req.params.id})
-    .populate("comment")
+    .populate("Comment")
     .then(function(dbComment){
-      res.json(dbComment);
+      res.json(dbComment.comment);
     })
     .catch(function(err){
       console.log(err);
     });
 });
+
+// Delete a comment
 
 // See the articles in the database
 app.get("/articles", function(req, res){

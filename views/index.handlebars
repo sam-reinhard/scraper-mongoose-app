@@ -22,9 +22,9 @@
             <div id="comment-modal" class="modal" data-id="{{_id}}">
                 <div class="modal-content">
                     <span class="close">&times;</span>
-                    {{#each comments}}
-                    <p>{{title}}</p>
-                    <p>{{body}}</p>
+                    {{#each comment}}
+                    <p>{{this.title}}</p>
+                    <p>{{this.body}}</p>
                     <button type="button" class="btn btn-dark" id="delete-button" data-id="{{_id}}">Delete</button>
                     {{/each}}
                     <form>
