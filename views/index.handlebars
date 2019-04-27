@@ -22,10 +22,15 @@
             <div id="comment-modal" class="modal" data-id="{{_id}}">
                 <div class="modal-content">
                     <span class="close">&times;</span>
+                    {{#each comments}}
+                    <p>{{title}}</p>
+                    <p>{{body}}</p>
+                    <button type="button" class="btn btn-dark" id="delete-button" data-id="{{_id}}">Delete</button>
+                    {{/each}}
                     <form>
                         <div class="form-group">
                             <label for="comment-title">Title</label>
-                            <input type="text" class="form-control" id="comment-title" placeholder="name@example.com">
+                            <input type="text" class="form-control" id="comment-title" placeholder="Title">
                         </div>
   
                         <div class="form-group">

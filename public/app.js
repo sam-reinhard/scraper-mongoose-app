@@ -8,13 +8,20 @@ $(document).on("click", "#scrape-button", function(){
     });
 });
 
-// Make Comment On-click
+// Make Comment On-click -- getting back the article object, not the comments
 $(document).on("click", "#comment-button", function(){
-    // open up the modal with the corresponding data-id
     var thisId = $(this).attr("data-id");
     console.log("make comment " + thisId );
 
-    var thisModal = $("#comment-modal").attr("data-id", thisId).show();
+    $("#comment-modal").attr("data-id", thisId).show();
+
+    $.ajax({
+        method: "GET",
+        url: "/articles/" + thisId
+    })
+    .then(function(response){
+        console.log(response);
+    });
 });
 
 // Close Comment Modal On-click
@@ -22,8 +29,7 @@ $(document).on("click", ".close", function(){
     $("#comment-modal").hide();
 });
 
-
-// Submit Comment On-click
+// Submit Comment On-click -- comments are being saved, but not in the articles database
 $(document).on("click", "#comment-submit", function(){
     var thisId = $(this).attr("data-id");
     console.log("Submit comment " + thisId);
@@ -41,7 +47,7 @@ $(document).on("click", "#comment-submit", function(){
         $("#comment-title").empty();
         $("#comment-body").empty();
     });
-    
+
     $("#comment-modal").hide();
 });
 

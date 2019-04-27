@@ -54,7 +54,7 @@ app.get("/scrape", function(req, res){
         .children("p")
         .text();
 
-        db.Article.create(result).then(function(dbArticle){
+        db.Article.create(result, {new: true}).then(function(dbArticle){
           console.log(dbArticle);
         })
         .catch(function(err){
@@ -66,9 +66,43 @@ app.get("/scrape", function(req, res){
   });    
 });
 
+
+
+// Submit a comment -- Not working, submits a comment to a new collection called comments and there's no association with the article
+app.post("/articles/:id", function(req, res){
+  console.log("submitting to /articles/" + req.params.id);
+  db.Comment.create(req.body)
+    .then(function(dbComment){
+      return db.Article.findOneAndUpdate({_id: req.params.id}, {comment: dbComment._id}, {new: true});
+    })
+    .then(function(dbArticle){
+      var hbsObject = {
+        articles: dbArticle
+      }
+      console.log("should have posted to the database");
+      res.render("index", hbsObject);
+    })
+    .catch(function(err){
+      console.log(err);
+    });
+});
+
+// View comments on an article -- sending back the article object for some reason
+app.get("/articles/:id", function(req, res){
+  console.log("getting from /articles/" + req.params.id);
+  db.Article.findOne({_id: req.params.id})
+    .populate("Comment")
+    .then(function(dbComment){
+      res.json(dbComment);
+    })
+    .catch(function(err){
+      console.log(err);
+    });
+});
+
 // See the articles in the database
 app.get("/articles", function(req, res){
-  console.log("on the / route");
+  console.log("getting the /articles route");
   db.Article.find({})
     .then(function(data){
       var hbsObject = {
@@ -82,36 +116,6 @@ app.get("/articles", function(req, res){
       res.json(err);
     });
 });
-
-// Submit a comment
-app.post("/articles/:id", function(req, res){
-  db.Comment.create(req.body)
-    .then(function(dbComment){
-      return db.Article.findOneAndUpdate({_id: req.params.id}, {note: dbComment._id}, {new: true});
-    })
-    .then(function(dbArticle){
-      var hbsObject = {
-        articles: dbArticle
-      }
-      res.render("index", hbsObject);
-    })
-    .catch(function(err){
-      console.log(err);
-    });
-});
-
-// View comments on an article
-app.get("/articles/:id", function(req, res){
-  db.Article.findOne({_id: req.params.id})
-    .populate("note")
-    .then(function(dbArticle){
-      res.json(dbArticle);
-    })
-    .catch(function(err){
-      console.log(err);
-    });
-});
-
 // Start the server
 app.listen(PORT, function() {
   console.log("App running on port " + PORT + "!");
